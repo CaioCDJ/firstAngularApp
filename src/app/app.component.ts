@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { throttle } from 'rxjs';
@@ -12,14 +13,11 @@ import { Todo } from '../models/todo.model';
 export class AppComponent {
   
   public todos: Todo[] = [];
-  public title: string = "Boxer is good";
+  public title: string = "Generic Todo app Angular";
   public form!: FormGroup;
 
   constructor(private fb: FormBuilder) {  
-    this.todos.push(new Todo(1,"Brincar com o Oliver",false)); 
-    this.todos.push(new Todo(2,"Alimentar o Oliver",false)); 
-    this.todos.push(new Todo(3,"Cultuar o Oliver",true)); 
-  }
+  this.load()}
 
   ngOnInit(): void{
     // Necessario criar um formBuilder
@@ -30,8 +28,18 @@ export class AppComponent {
         Validators.required
       ])]
     }));
+  }
 
+  add(){
+    const title = this.form.controls['title'].value;
+    const id = this.todos.length + 1 ;
+    this.todos.push(new Todo(id,title,false));    
+    this.clear();
+    this.save();
+  }
 
+  clear(){
+    this.form.reset();
   }
 
   remove(todo: Todo){
@@ -39,14 +47,27 @@ export class AppComponent {
     if(index !== -1){
       this.todos.splice(index,1);
     }
+
+    this.save();
   }
 
   markAsDone(todo: Todo){
     todo.done = true;
+    this.save();
   }
    
   markAsUnDone(todo: Todo){
     todo.done = false;
+    this.save();
   }
 
+  save(){
+    const data = JSON.stringify(this.todos);
+    localStorage.setItem("todos",data);
+  }
+
+  load(){
+    const data = localStorage.getItem('todos');
+    this.todos = JSON.parse(data || '{}');
+  }
 }
