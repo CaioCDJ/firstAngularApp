@@ -1,24 +1,31 @@
 <h1>{{ title }}</h1>
 
-<ul>
+<ul *ngIf="mode=='list'">
   <p *ngIf="todos.length == 0 "><small>Não tem nenhuma tarefa hoje!</small></p>
   <li *ngFor="let todo of todos">
-    {{ todo.id }} - {{todo.title}} | 
+    {{ todo.id }} - {{todo.title}}  
     <button *ngIf="!todo.done" (click)="markAsDone(todo)">CONCLUIR</button> |
     <button *ngIf="todo.done" (click)="markAsUnDone(todo)">REFAZER</button> |
     <button (click)="remove(todo)">REMOVER</button></li>
 </ul>
 
+
 <!-- formGroup -->
-<form [formGroup]="form">
-  <fieldset>
-    <label for="">Tarefa: </label>
-    <input type="text" placeholder="Nome da Tarefa" 
-    maxlength="60" formControlName="title">
-    <small *ngIf="form.controls['title'].invalid && !form.controls['title'].pristine">Este campo deve conter entre 3 e 60 caracteres</small>
-    <button [disabled]="form.invalid" (click)="add()">salvar</button>
-  </fieldset>
- </form>
+<div id="modal" *ngIf="mode=='add'">
+  <form [formGroup]="form">
+    <fieldset>
+      <label for="">Tarefa: </label>
+      <input class="txt" type="text" placeholder="Nome da Tarefa" 
+      maxlength="60" formControlName="title">
+      <small *ngIf="form.controls['title'].invalid && !form.controls['title'].pristine">Este campo deve conter entre 3 e 60 caracteres</small>
+      <button class="btn" [disabled]="form.invalid" (click)="add()">salvar</button>
+    </fieldset>
+  </form> 
+</div>
+
+<button class="add-button" (click)="changeMode('add')" *ngIf="mode=='list'">NOVA TAREFA</button>
+
+<button class="add-button" (click)="changeMode('list')" *ngIf="mode=='add'">CANCELAR</button>
 
 <!--
   () = HTML > TS

@@ -11,7 +11,8 @@ import { Todo } from '../models/todo.model';
 })
 
 export class AppComponent {
-  
+
+  public mode: string = "list"; 
   public todos: Todo[] = [];
   public title: string = "Generic Todo app Angular";
   public form!: FormGroup;
@@ -68,6 +69,15 @@ export class AppComponent {
 
   load(){
     const data = localStorage.getItem('todos');
-    this.todos = JSON.parse(data || '{}');
+    
+    if(data) 
+      this.todos = JSON.parse(data || '{}');
+    
+    else
+      this.todos = [];
+  }
+
+  changeMode(mode: string){
+    this.mode = mode;
   }
 }
